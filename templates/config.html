@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>DASHBOARD</title>
+        <style>
+            body {
+            background-color: #222;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            }
+
+            a:link{
+                color:white;
+                background-color: transparent;
+            }
+
+            a:visited{
+                 color:white;
+                 background-color: transparent;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>CONFIG</h1>
+        <h2>ADD</h2>
+        <form method="post" action="{{ url_for('configure') }}">
+            <label for="button_name">Button Name:</label>
+            <input type="text" name="button_name" required><br>
+
+            <label for="button_color">Button Color:</label>
+            <select name="button_color" required><br>
+                {% for color in COLOR_LIST %}
+                <option required>{{ color }}</option>
+                {% endfor %}
+            </select><br>
+
+            <label for="xml_element">XML Element:</label>
+            <input type="text" name="xml_element" required><br>
+            <center>
+                <button type="submit">Add Button</button><br>
+            </center>
+        </form>
+        <h3>REMOVE</h3>
+        <form method="post" action="{{ url_for('remove') }}">
+            <label for="remove">Remove</label>
+            <select name="remove">
+                {% for button in button_list %}
+                <option required>{{ button.name }}</option>
+                {% endfor %}
+            </select><br>
+            <center>
+                <button type="submit">Confirm Removal</button>
+            </center>
+        </form>
+
+        <h2>Current Buttons</h2>
+        <ul>    
+            {% for button in button_list %}
+                <li>{{ button.name }} - {{ button.color }} - {{button.xml_element}}</li>
+            {% endfor %}
+        </ul>
+        <a href="{{ url_for('index') }}" style:"link">DASH</a>
+    </body>
+</html>

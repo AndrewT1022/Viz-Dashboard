@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DASHBOARD</title>
+    <style>
+        /* Dark theme styling */
+        body {
+            background-color: #222;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .title {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        a:link, a:visited{
+            color: white;
+            background-color: transparent;
+        }
+        .button-container {
+            display: flex;
+            gap: 20px;
+        }
+        .button {
+            background-color: #555;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #444;
+        }
+        .button.active {
+            background-color: #999;
+        }
+
+        .red {
+            background-color: #ff0000;
+        }
+
+        .orange{
+            background-color: orange;
+        }
+
+        .yellow {
+            background-color: #ffd700;
+        }
+
+        .green{
+            background-color: green;
+        }
+
+        .blue{
+            background-color: blue;
+        }
+
+        .indigo{
+            background-color: indigo;
+        }
+
+        .violet{
+            background-color: violet;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="title">Football Dash</div>
+        <div class="button-container">
+            {% for button in button_list %}
+            <form method="post">
+                <button type="submit" class="button {% if button.status == 1 %} active {% endif %} {{ button.color }}" name="{{ button.name }}" value="{{ 1-button.status }}">{{ button.name }}</button>
+            </form>
+            {% endfor %}
+        </div>
+    </div>
+    <a href="{{ url_for('configure') }}" style:"link">CONFIG</a>
+</body>
+</html>
+
