@@ -104,6 +104,9 @@ def configure():
         button_color = request.form.get("button_color")
         xml_element = request.form.get("xml_element")
 
+        #get user inputted name of dash
+        dashName = request.form.get("dashName")
+
         #set an instance of Button class using received form data
         new_button = Button(button_name, button_color, xml_element)
         new_button.status = 0
