@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 import json
 import xml.etree.ElementTree as ET
 
-
+#saved configuration
 CONFIG_FILE = "config.json"
 
 #allowable color options
@@ -23,13 +23,18 @@ def loadConfig():
     global button_list
     try:
         with open(CONFIG_FILE, "r") as jsonFile:
+
             #decodes dictionary back into Button object from the json file
             button_list = [Button(**button) for button in json.load(jsonFile)]
-    except (json.decoder.JSONDecodeError, FileNotFoundError):
+
+    except (json.decoder.JSONDecodeError, FileNotFoundError) as e:
+
         #handle error
-        print("CONFIG File not Found")
+        print(f"CONFIG File Error: {e}")
+
         #if no json file found create empty list
         button_list = []
+
     return button_list
 
 
@@ -41,8 +46,8 @@ button_list = loadConfig()
 dashApp = Flask(__name__)
 
 
+#---------------------------------------------- XML HANDLING ----------------------------------------------
 #Elements will be sub of dashRoot
-#XML elements go here--------------------------
 
 def toXML():
     global button_list
@@ -57,19 +62,28 @@ def toXML():
         newTree = ET.ElementTree(dashRoot)
         newTree.write("dash.xml")
 
-#----------------------------------------------
+#---------------------------------------------------------------------------------------------------------
 
+#---------------------------------------------- HTML HANDLING --------------------------------------------
 #GET = Server ---> HTML
 #POST = HTML ---> Server
 #Decorator so that when user accesses the base url, the index() function is run
 #Says the HTTP methodds GET and POST will be used
+        
 @dashApp.route("/", methods = ["GET", "POST"])
 def index():
+
     global button_list
+
     if request.method == "POST":
+
         for button in button_list:
+
             if button.name in request.form:
+
                 button.status = int(request.form[button.name])
+
+    #overwrites XML           
     toXML()
 
     return render_template("main.html", button_list = button_list)
@@ -110,12 +124,16 @@ def remove():
     if request.method == "POST":
 
         to_remove_name = request.form.get("remove")
-        #overwrites button_list with only objects in which .name != remove name
+        #overwrites button_list with only objects in which .name doesn't match the remove name
         button_list = [button for button in button_list if button.name != to_remove_name]
 
         #update json
         saveConfig()
+
+    #refresh page
     return redirect(url_for("configure"))        
+
+#---------------------------------------------------------------------------------------------------------
 
 
 #save function
@@ -127,5 +145,8 @@ def saveConfig():
         #converts button object into a dictionary, then dumps to our json file
         json.dump([button.__dict__ for button in button_list], jsonFile)
 
+#ensures script only runs when triggered directly
+if __name__ == "__main__":
 
-dashApp.run(debug=True)
+    #flask debug (debug = True)
+    dashApp.run()
