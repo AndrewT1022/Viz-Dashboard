@@ -8,6 +8,7 @@ CONFIG_FILE = "config.json"
 #allowable color options
 COLOR_LIST = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"]
 
+dashTitle = "Default"
 
 #Button class
 class Button:
@@ -86,7 +87,7 @@ def index():
     #overwrites XML           
     toXML()
 
-    return render_template("main.html", button_list = button_list)
+    return render_template("main.html", button_list = button_list, dashTitle = dashTitle)
 
 
 #same as index decorator, but for config page
@@ -134,7 +135,16 @@ def remove():
         saveConfig()
 
     #refresh page
-    return redirect(url_for("configure"))        
+    return redirect(url_for("configure")) 
+
+@dashApp.route("/dBname", methods = ["POST"]) 
+def dBname():
+
+    if request.method == "POST":
+        global dashTitle
+        dashTitle = request.form.get("dash_name")    
+
+    return redirect(url_for("configure"))  
 
 #---------------------------------------------------------------------------------------------------------
 

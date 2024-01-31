@@ -28,6 +28,10 @@
     </head>
     <body>
         <h1>CONFIG</h1>
+        <form method="post" action="{{ url_for('dBname') }}">
+            <label for="dash_name">Dashboard Name</label>
+            <input type="text" name="dash_name"><br>
+        </form>
         <h2>ADD</h2>
         <form method="post" action="{{ url_for('configure') }}">
             <label for="button_name">Button Name:</label>
