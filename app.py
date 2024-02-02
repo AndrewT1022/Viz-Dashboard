@@ -1,14 +1,16 @@
 from flask import Flask, render_template, request, redirect, url_for
+import webbrowser
 import json
 import xml.etree.ElementTree as ET
 
 #saved configuration
 CONFIG_FILE = "config.json"
 
+#stored dash name
+DB_NAME_STORE = "dashName.txt"
+
 #allowable color options
 COLOR_LIST = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"]
-
-dashTitle = "Default"
 
 #Button class
 class Button:
@@ -20,7 +22,7 @@ class Button:
 
 
 #load function
-def loadConfig():
+def loadButtonConfig():
     global button_list
     try:
         with open(CONFIG_FILE, "r") as jsonFile:
@@ -40,7 +42,21 @@ def loadConfig():
 
 
 #sets list based on json data
-button_list = loadConfig()
+button_list = loadButtonConfig()
+
+def loadDBname():
+    try:
+            with open(DB_NAME_STORE, "r") as dbNameFile:
+                dbName = dbNameFile.read()
+
+    except(FileNotFoundError) as e:
+
+        print(f"DB_NAME_STORE File Error {e}")
+        dbName = "Dashboard"
+    
+    return dbName
+
+dashTitle = loadDBname()
 
 
 #Define variable as a Flask class
@@ -62,6 +78,9 @@ def toXML():
 
         newTree = ET.ElementTree(dashRoot)
         newTree.write("dash.xml")
+
+
+
 
 #---------------------------------------------------------------------------------------------------------
 
@@ -143,8 +162,8 @@ def dBname():
     if request.method == "POST":
         global dashTitle
         dashTitle = request.form.get("dash_name")    
-
-    return redirect(url_for("configure"))  
+        saveConfig()
+    return redirect(url_for("index"))  
 
 #---------------------------------------------------------------------------------------------------------
 
@@ -152,14 +171,21 @@ def dBname():
 #save function
 def saveConfig():
     global button_list
+    global dashTitle
 
     with open(CONFIG_FILE, "w") as jsonFile:
 
         #converts button object into a dictionary, then dumps to our json file
         json.dump([button.__dict__ for button in button_list], jsonFile)
 
+    with open(DB_NAME_STORE, "w") as dbNameFile:
+        dbNameFile.write(dashTitle)
+
 #ensures script only runs when triggered directly
 if __name__ == "__main__":
 
+    #open localhost
+    webbrowser.open("http://127.0.0.1:5000/")
     #flask debug (debug = True)
     dashApp.run()
+
