@@ -1,4 +1,4 @@
-Viz-Dashboaard is a live data solution for VizRT
+Viz-Dashboard is a live data solution for VizRT
 
 What do I use this for?
 
